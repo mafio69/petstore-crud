@@ -22,3 +22,15 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    App\Application\Pet\CreatePet\CreatePetHandler:
+      arguments:
+        $petApiClient: '@App\Infrastructure\PetstoreClient'
+        $validator: '@validator'
+
+    App\Application\Pet\GetPetById\GetPetByIdHandler:
+      arguments:
+        $petApiClient: '@App\Infrastructure\PetstoreClient'
+
+    App\Infrastructure\PetstoreClient:
+      arguments:
+        $baseUrl: '%env(PETSTORE_BASE_URL)%'
