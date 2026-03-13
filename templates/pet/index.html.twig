@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Pets - {{ status }}{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Pets</h1>
+    <a href="{{ path('web_pets_create') }}" class="btn btn-success">+ Add Pet</a>
+</div>
+
+<form method="GET" action="{{ path('web_pets_index') }}" class="mb-4">
+    <div class="d-flex gap-2">
+        {% for s in ['available', 'pending', 'sold'] %}
+            <a href="{{ path('web_pets_index', {status: s}) }}"
+               class="btn btn-sm {{ status == s ? 'btn-primary' : 'btn-outline-primary' }}">
+                {{ s }}
+            </a>
+        {% endfor %}
+    </div>
+</form>
+
+{% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+{% elseif pets is empty %}
+    <div class="alert alert-info">No pets found with status "{{ status }}".</div>
+{% else %}
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pet in pets %}
+            <tr>
+                <td>{{ pet.id }}</td>
+                <td>{{ pet.name }}</td>
+                <td>
+                    <span class="badge
+                        {% if pet.status == 'available' %}bg-success
+                        {% elseif pet.status == 'pending' %}bg-warning text-dark
+                        {% else %}bg-secondary{% endif %}">
+                        {{ pet.status }}
+                    </span>
+                </td>
+                <td>
+                    <div class="d-flex gap-1">
+                        <a href="{{ path('web_pets_show', {id: pet.id, name: pet.name, status: pet.status, photoUrl: pet.photoUrls|first|default('')}) }}" class="btn btn-sm btn-info">View</a>
+                        <a href="{{ path('web_pets_edit', {id: pet.id, name: pet.name, status: pet.status, photoUrl: pet.photoUrls|first|default('')}) }}" class="btn btn-sm btn-warning">Edit</a>
+                        <form method="POST" action="{{ path('web_pets_delete', {id: pet.id}) }}"
+                              onsubmit="return confirm('Delete {{ pet.name }}?')">
+                            <input type="hidden" name="status" value="{{ status }}">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p class="text-muted">{{ pets|length }} pet(s) found.</p>
+{% endif %}
+{% endblock %}

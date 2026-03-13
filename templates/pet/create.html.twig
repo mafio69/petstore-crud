@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add Pet{% endblock %}
+
+{% block body %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h1 class="mb-4">Add New Pet</h1>
+        <form method="POST" action="{{ path('web_pets_create_post') }}">
+            <div class="mb-3">
+                <label for="name" class="form-label">Name *</label>
+                <input type="text" id="name" name="name" class="form-control" value="{{ data.name ?? '' }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="status" class="form-label">Status</label>
+                <select id="status" name="status" class="form-select">
+                    {% for s in ['available', 'pending', 'sold'] %}
+                        <option value="{{ s }}" {{ (data.status ?? 'available') == s ? 'selected' : '' }}>{{ s }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="photoUrl" class="form-label">Photo URL</label>
+                <input type="url" id="photoUrl" name="photoUrl" class="form-control" value="{{ data.photoUrl ?? '' }}">
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-success">Create</button>
+                <a href="{{ path('web_pets_index') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
