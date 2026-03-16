@@ -1,34 +1,34 @@
-# Petstore CRUD — Symfony 7
+# Petstore CRUD - Symfony 7
 
-Aplikacja integrująca się z [Swagger Petstore API](https://petstore.swagger.io/). Zapewnia pełne CRUD na zasobie `/pet` przez interfejs webowy (Twig) oraz REST API z dokumentacją Swagger UI.
+Application that integrates with [Swagger Petstore API](https://petstore.swagger.io/). Provides full CRUD on the `/pet` resource via web interface (Twig) and REST API with Swagger UI documentation.
 
 ## Stack
 
 - PHP 8.2+, Symfony 7.1
-- Guzzle 7 — HTTP client do Petstore API
-- Twig + Bootstrap 5 — frontend
-- PHPUnit 13 — testy
+- Guzzle 7 - HTTP client for Petstore API
+- Twig + Bootstrap 5 - frontend
+- PHPUnit 13 - tests
 
-## Architektura
+## Architecture
 
-Hexagonal Architecture. Warstwy komunikują się przez interfejsy — `PetApiClientInterface` definiuje kontrakt, `PetstoreClient` go implementuje. Podmiana źródła danych nie wymaga zmian poza warstwą Infrastructure.
+Hexagonal Architecture. The layers communicate through interfaces - `PetApiClientInterface` defines the contract, `PetstoreClient` implements it. Replacing the data source does not require changes outside the Infrastructure layer.
 
 ```
 src/
 ├── Controller/
-│   ├── Api/          — REST API (JSON responses)
-│   └── Web/          — interfejs webowy (Twig)
-├── Application/Pet/  — handlery use-case + Commands/Queries
-│   ├── CreatePet/
-│   ├── GetPetById/
-│   ├── UpdatePet/
-│   ├── DeletePet/
-│   └── FindPetsByStatus/
-├── Domain/Pet/       — PetDto, PetApiClientInterface
-└── Infrastructure/   — PetstoreClient (Guzzle)
+│ ├── Api/ - REST API (JSON responses)
+│ └── Web/ - web interface (Twig)
+├── Application/Pet/ — use-case handlers + Commands/Queries
+│ ├── CreatePet/
+│ ├── GetPetById/
+│ ├── UpdatePet/
+│ ├── DeletePet/
+│ └── FindPetsByStatus/
+├── Domain/Pet/ — PetDto, PetApiClientInterface
+└── Infrastructure/ — PetstoreClient (Guzzle)
 ```
 
-## Uruchomienie
+## Startup
 
 ```bash
 cd petstore-crud
@@ -37,49 +37,49 @@ cp .env.example .env
 php -S localhost:8000 -t public
 ```
 
-Aplikacja nie wymaga bazy danych — wszystkie dane trafiają do zewnętrznego Petstore API.
-Docker Compose dostarcza PostgreSQL jeśli potrzebny (Doctrine skonfigurowany, nieużywany w tym projekcie):
+The application does not require a database - all data goes to the external Petstore API.
+Docker Compose provides PostgreSQL if needed (Doctrine configured, not used in this project):
 
 ```bash
 docker compose up -d
 ```
 
-## Interfejs webowy
+## Web interface
 
-| Ścieżka | Opis |
+| Path | Description |
 |---|---|
-| `GET /pets` | Lista petów z filtrem po statusie |
-| `GET /pets/create` | Formularz dodawania |
-| `GET /pets/{id}` | Podgląd |
-| `GET /pets/{id}/edit` | Formularz edycji |
+| `GET /pets` | List of pets filtered by status |
+| `GET /pets/create` | Add form |
+| `GET /pets/{id}` | Preview |
+| `GET /pets/{id}/edit` | Edit form |
 
 ## REST API
 
 Swagger UI: [`/api/docs`](http://localhost:8000/api/docs)
 
-| Metoda | Ścieżka | Opis |
+| Method | Path | Description |
 |---|---|---|
-| `POST` | `/api/pets` | Utwórz peta |
-| `GET` | `/api/pets/{id}` | Pobierz peta po ID |
-| `PUT` | `/api/pets/{id}` | Zaktualizuj peta |
-| `DELETE` | `/api/pets/{id}` | Usuń peta |
+| `POST` | `/api/pets` | Create a pet |
+| `GET` | `/api/pets/{id}` | Download pet by ID |
+| `PUT` | `/api/pets/{id}` | Update pet |
+| `DELETE` | `/api/pets/{id}` | Delete pet |
 
 ```bash
-curl -X POST http://localhost:8000/api/pets \
+curl -X POST http://localhost:8000/api/pets\
   -H "Content-Type: application/json" \
   -d '{"name": "Rex", "status": "available", "photoUrls": []}'
 ```
 
-## Testy
+## Tests
 
 ```bash
 php bin/phpunit
 ```
 
-## Uwaga o Petstore API
+## Note about Petstore API
 
-Petstore to publiczne demo API współdzielone przez wszystkich użytkowników. `GET /pet/findByStatus` może zwracać rekordy nieistniejące już pod `GET /pet/{id}`. Aplikacja obsługuje ten przypadek — widok korzysta wtedy z danych przekazanych z listy.
+Petstore is a public demo API shared by all users. `GET /pet/findByStatus` can return records that no longer exist under `GET /pet/{id}`. The application supports this case - the view then uses the data passed from the list.
 
-## Czas realizacji
+## Lead time
 
-~6 godzin
+~6 hours
