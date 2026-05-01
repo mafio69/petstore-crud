@@ -12,28 +12,12 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    App\Domain\Pet\PetApiClientInterface: '@App\Infrastructure\DoctrinePetRepository'
+
     App\Application\Pet\CreatePet\CreatePetHandler:
         arguments:
-            $petApiClient: '@App\Infrastructure\PetstoreClient'
             $validator: '@validator'
-
-    App\Application\Pet\GetPetById\GetPetByIdHandler:
-        arguments:
-            $petApiClient: '@App\Infrastructure\PetstoreClient'
 
     App\Application\Pet\UpdatePet\UpdatePetHandler:
         arguments:
-            $petApiClient: '@App\Infrastructure\PetstoreClient'
             $validator: '@validator'
-
-    App\Application\Pet\DeletePet\DeletePetHandler:
-        arguments:
-            $petApiClient: '@App\Infrastructure\PetstoreClient'
-
-    App\Application\Pet\FindPetsByStatus\FindPetsByStatusHandler:
-        arguments:
-            $petApiClient: '@App\Infrastructure\PetstoreClient'
-
-    App\Infrastructure\PetstoreClient:
-        arguments:
-            $baseUrl: '%env(PETSTORE_BASE_URL)%'
